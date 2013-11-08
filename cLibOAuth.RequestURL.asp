@@ -89,7 +89,7 @@
 	'	PARAMETERS:	
 	'	PURPOSE:	
 	'
-	'	AUTHOR:	sdesapio		DATE: 04.04.10		LAST MODIFIED: 11.23.11
+	'	AUTHOR:	sdesapio		DATE: 04.04.10		LAST MODIFIED: 04.04.10
 	'**************************************************************************
 		Private Function Get_Signature()
 			Dim strBaseSignature : strBaseSignature = _
@@ -99,8 +99,8 @@
 
 			Dim strSecret : strSecret = _
 				Utils.URLEncode(m_strConsumerSecret) & "&" & _
-				Utils.URLEncode(m_strTokenSecret)
-
+				m_strTokenSecret
+				
 			Get_Signature = b64_hmac_sha1(strSecret, strBaseSignature)
 		End Function
 
