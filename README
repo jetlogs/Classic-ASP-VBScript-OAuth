@@ -18,3 +18,18 @@
 '******************************************************************************
 '******************************************************************************
 
+	Forked by Jet Fontanilla 2013/11/08
+	
+	Bug fixes:
+	- URL encodes the token secret before creating the OAuth signtaure
+	
+	New features:	
+	
+	objOauth.TokenSecret = "d982fcc10234"
+	- sets a custom token secret for your OAuth request
+	
+	objOauth.Payload = "{'user_id':1}"
+	- sets the payload you want to send
+	
+	objOauth.ContentType = "application/json"
+	- sets the content type of the OAuth request. default is application/x-www-form-urlencoded
