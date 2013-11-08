@@ -34,6 +34,8 @@
 		' reference to the consumer secret acquired after registering with the
 		' oAuth service provider
 		Private m_strConsumerSecret
+		
+		Private m_tokenSecret
 
 		' the request URL
 		Private m_strEndPoint
@@ -56,6 +58,12 @@
 
 		' used to set user-agent header
 		Private m_strUserAgent
+		
+		' payload data for the Send() function
+		Private m_payload
+		
+		' for custom content type default is application/x-www-form-urlencoded
+		Private m_contentType
 
 	'**************************************************************************
 '***'CLASS_INITIALIZE / CLASS_TERMINATE
@@ -91,6 +99,10 @@
 
 		Public Property Let ConsumerSecret(pData)
 			m_strConsumerSecret = pData
+		End Property
+		
+		Public Property Let TokenSecret(pData)
+			m_tokenSecret = pData
 		End Property
 
 		Public Property Let EndPoint(pData)
@@ -136,6 +148,15 @@
 		Public Property Let UserAgent(pData)
 			m_strUserAgent = pData
 		End Property
+		
+		Public Property Let Payload(pData)
+			m_payload = pData
+		End Property
+		
+		Public Property Let ContentType(pData)
+			m_contentType = pData
+		End Property
+			
 
 	'**************************************************************************
 '***'PUBLIC FUNCTIONS
@@ -153,15 +174,19 @@
 
 			' make the call
 			On Error Resume Next
+			
+			If (m_contentType = "") Then
+				m_contentType = "application/x-www-form-urlencoded"
+			End If
 
 			Dim objXMLHTTP : Set objXMLHTTP = Server.CreateObject("Msxml2.ServerXMLHTTP.6.0")
 				objXMLHTTP.setTimeouts OAUTH_TIMEOUT_RESOLVE, OAUTH_TIMEOUT_CONNECT, OAUTH_TIMEOUT_SEND, OAUTH_TIMEOUT_RECEIVE
 				objXMLHTTP.Open m_strRequestMethod, strRequestURL, False
-				objXMLHTTP.SetRequestHeader "Content-Type","application/x-www-form-urlencoded"
+				objXMLHTTP.SetRequestHeader "Content-Type", m_contentType
 				objXMLHTTP.SetRequestHeader "User-Agent", m_strUserAgent
 				objXMLHTTP.SetRequestHeader "Host", m_strHost
 
-				objXMLHTTP.Send()
+				objXMLHTTP.Send(m_payload)
 
 			' check for errors
 			If Err.Number <> 0 Then
@@ -262,7 +287,7 @@
 				objRequestURL.EndPoint = m_strEndPoint
 				objRequestURL.Method = m_strRequestMethod
 				objRequestURL.Parameters = strParameters
-				objRequestURL.TokenSecret = Session(OAUTH_TOKEN_SECRET)
+				objRequestURL.TokenSecret = m_tokenSecret
 
 			Get_RequestURL = objRequestURL.Get_RequestURL()
 
