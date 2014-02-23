@@ -15,6 +15,7 @@
 		Private m_strMethod
 		Private m_strParameters
 		Private m_strTokenSecret
+		Private m_appendSignature
 
 	'**************************************************************************
 '***'CLASS_INITIALIZE / CLASS_TERMINATE
@@ -49,6 +50,10 @@
 		Public Property Let TokenSecret(pData)
 			m_strTokenSecret = pData
 		End Property
+		
+		Public Property Let AppendSignature(pData)
+			m_appendSignature = pData
+		End Property
 
 	'**************************************************************************
 '***'PRIVATE PROPERTIES
@@ -75,10 +80,18 @@
 			Dim strSignature : strSignature = Get_Signature()
 				strSignature = Utils.URLEncode(strSignature)
 
-			Get_RequestURL = _
-				m_strEndPoint & "?" & _
-				m_strParameters & "&" & _
-				"oauth_signature=" & strSignature
+			Dim urlString
+			urlString = m_strEndPoint 
+			
+			If m_strParameters <> "" Then
+				urlString = urlString & "?" & m_strParameters
+			End If
+				
+			If m_appendSignature <> "" Then
+				urlString = urlString & "&oauth_signature=" & strSignature
+			End If
+			
+			Get_RequestURL = urlString
 		End Function
 
 	'**************************************************************************
